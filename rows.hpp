@@ -5,268 +5,9 @@
 using namespace System;
 using namespace System::Windows::Forms;
 
-ref class budgetRow {
-private:
-	static int rowCount = 0;
-	bool alterValues = false;
-	void convertSysToStdString(System::String^ s, std::string& os) {
-		using namespace Runtime::InteropServices;
-		const char* chars =
-			(const char*)(Marshal::StringToHGlobalAnsi(s)).ToPointer();
-		os = chars;
-		Marshal::FreeHGlobal(IntPtr((void*)chars));
-	}
-	//
-	// Event handlers
-	//
-	System::Void alterClick(System::Object^ sender, System::EventArgs^ e) {
-		if (alterValues) {
-			switchToViewOnly();
-		}
-		else {
-			switchToAlter();
-		}
-		alterValues = !alterValues;
-	}
-
-
-	System::Void switchToViewOnly() {
-		//Load new values
-		std::string temp;
-		convertSysToStdString(this->categoryAlter->Text, temp);
-		this->category->setCategory(temp);
-		convertSysToStdString(this->budgetAlter->Text, temp);
-		this->category->setCost(money(temp));
-
-		//Break down table
-		this->tableLayout->Controls->Clear();
-		this->tableLayout->ColumnStyles->Clear();
-
-		//Rebuild table
-		this->tableLayout->ColumnCount = 6;
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
-			33.33332F)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
-			33.33334F)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
-			33.33334F)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
-			32)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
-			32)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
-			32)));
-		this->tableLayout->Controls->Add(this->categoryName, 0, 0);
-		this->tableLayout->Controls->Add(this->cost, 1, 0);
-		this->tableLayout->Controls->Add(this->actual, 2, 0);
-		this->tableLayout->Controls->Add(this->alter, 3, 0);
-		this->tableLayout->Controls->Add(this->remove, 4, 0);
-		this->tableLayout->Controls->Add(this->toggleTransactions, 5, 0);
-
-		update();
-	}
-
-
-
-	System::Void switchToAlter() {
-		//Break down table
-		this->tableLayout->Controls->Clear();
-		this->tableLayout->ColumnStyles->Clear();
-
-		//Rubuld table 
-		this->tableLayout->ColumnCount = 7;
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
-			33.26886F)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
-			7.156309F)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
-			27.11864F)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
-			32.39171F)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
-			32)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
-			32)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
-			32)));
-		this->tableLayout->Controls->Add(this->categoryAlter, 0, 0);
-		this->tableLayout->Controls->Add(this->dollarSign, 1, 0);
-		this->tableLayout->Controls->Add(this->budgetAlter, 2, 0);
-		this->tableLayout->Controls->Add(this->actual, 3, 0);
-		this->tableLayout->Controls->Add(this->alter, 4, 0);
-		this->tableLayout->Controls->Add(this->remove, 5, 0);
-		this->tableLayout->Controls->Add(this->toggleTransactions, 6, 0);
-
-		update();
-	}
-
-
-
-
-
-public:
-	budgetCategory* category;
-	System::Windows::Forms::TableLayoutPanel^ tableLayout;
-	System::Windows::Forms::Label^ categoryName;
-	System::Windows::Forms::Label^ cost;
-	System::Windows::Forms::Label^ actual;
-	System::Windows::Forms::Label^ dollarSign;
-	System::Windows::Forms::Button^ alter;
-	System::Windows::Forms::Button^ remove;
-	System::Windows::Forms::Button^ toggleTransactions;
-	System::Windows::Forms::TextBox^ categoryAlter;
-	System::Windows::Forms::TextBox^ budgetAlter;
-	transaction* test;
-
-	budgetRow(budgetCategory* bc) {
-		category = bc;
-		rowCount++;
-		
-		//Instantiate Variables
-		this->tableLayout = (gcnew System::Windows::Forms::TableLayoutPanel());
-		this->categoryName = (gcnew System::Windows::Forms::Label());
-		this->cost = (gcnew System::Windows::Forms::Label());
-		this->actual = (gcnew System::Windows::Forms::Label());
-		this->dollarSign = (gcnew System::Windows::Forms::Label());
-		this->alter = (gcnew System::Windows::Forms::Button());
-		this->remove = (gcnew System::Windows::Forms::Button());
-		this->toggleTransactions = (gcnew System::Windows::Forms::Button());
-		this->categoryAlter = (gcnew System::Windows::Forms::TextBox());
-		this->budgetAlter = (gcnew System::Windows::Forms::TextBox());
-
-		this->tableLayout->SuspendLayout();
-
-		// 
-		// tableLayout
-		// 
-		this->tableLayout->ColumnCount = 6;
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
-			33.33332F)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
-			33.33334F)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
-			33.33334F)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
-			32)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
-			32)));
-		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
-			32)));
-		this->tableLayout->Controls->Add(this->categoryName, 0, 0);
-		this->tableLayout->Controls->Add(this->cost, 1, 0);
-		this->tableLayout->Controls->Add(this->actual, 2, 0);
-		this->tableLayout->Controls->Add(this->alter, 3, 0);
-		this->tableLayout->Controls->Add(this->remove, 4, 0);
-		this->tableLayout->Controls->Add(this->toggleTransactions, 5, 0);
-		this->tableLayout->Location = System::Drawing::Point(153, 25);
-		this->tableLayout->Name = L"tableLayout";
-		this->tableLayout->RowCount = 1;
-		this->tableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 100)));
-		this->tableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 32)));
-		this->tableLayout->Size = System::Drawing::Size(628, 32);
-		this->tableLayout->TabIndex = 0;
-		// 
-		// categoryName
-		// 
-		this->categoryName->Anchor = System::Windows::Forms::AnchorStyles::None;
-		this->categoryName->AutoSize = true;
-		this->categoryName->Location = System::Drawing::Point(43, 9);
-		this->categoryName->Name = L"categoryName";
-		this->categoryName->Size = System::Drawing::Size(86, 13);
-		this->categoryName->TabIndex = 0;
-		this->categoryName->Text = gcnew String(category->getCategory().c_str());
-		//
-		// categoryAlter
-		//
-		this->categoryAlter->Anchor = System::Windows::Forms::AnchorStyles::Left;
-		this->categoryAlter->Location = System::Drawing::Point(216, 6);
-		this->categoryAlter->Name = L"categoryAlter";
-		this->categoryAlter->Size = System::Drawing::Size(100, 20);
-		this->categoryAlter->TabIndex = 5;
-		this->categoryAlter->Text = gcnew String(this->category->getCategory().c_str());
-		// 
-		// cost
-		// 
-		this->cost->Anchor = System::Windows::Forms::AnchorStyles::None;
-		this->cost->AutoSize = true;
-		this->cost->Location = System::Drawing::Point(227, 9);
-		this->cost->Name = L"cost";
-		this->cost->Size = System::Drawing::Size(65, 13);
-		this->cost->TabIndex = 1;
-		this->cost->Text = gcnew String(category->getCost().toReadable().c_str());
-		// 
-		// dollarSign
-		// 
-		this->dollarSign->Anchor = System::Windows::Forms::AnchorStyles::Right;
-		this->dollarSign->AutoSize = true;
-		this->dollarSign->Location = System::Drawing::Point(197, 9);
-		this->dollarSign->Name = L"dollarSign";
-		this->dollarSign->Size = System::Drawing::Size(13, 13);
-		this->dollarSign->TabIndex = 6;
-		this->dollarSign->Text = L"$";
-		//
-		// budgetAlter
-		//
-		this->budgetAlter->Anchor = System::Windows::Forms::AnchorStyles::Left;
-		this->budgetAlter->Location = System::Drawing::Point(216, 6);
-		this->budgetAlter->Name = L"budgetAlter";
-		this->budgetAlter->Size = System::Drawing::Size(100, 20);
-		this->budgetAlter->TabIndex = 5;
-		this->budgetAlter->Text = gcnew String(this->category->getCost().toFile().c_str());
-		// 
-		// actual
-		// 
-		this->actual->Anchor = System::Windows::Forms::AnchorStyles::None;
-		this->actual->AutoSize = true;
-		this->actual->Location = System::Drawing::Point(402, 9);
-		this->actual->Name = L"actual";
-		this->actual->Size = System::Drawing::Size(61, 13);
-		this->actual->TabIndex = 5;
-		this->actual->Text = gcnew String(category->getActual().toReadable().c_str());
-		// 
-		// alter
-		// 
-		this->alter->Location = System::Drawing::Point(522, 3);
-		this->alter->Name = L"alter";
-		this->alter->Size = System::Drawing::Size(28, 23);
-		this->alter->TabIndex = 2;
-		this->alter->Text = L"*";
-		this->alter->UseVisualStyleBackColor = true;
-		this->alter->Click += gcnew System::EventHandler(this, &budgetRow::alterClick);
-		// 
-		// remove
-		// 
-		this->remove->Location = System::Drawing::Point(556, 3);
-		this->remove->Name = L"remove";
-		this->remove->Size = System::Drawing::Size(26, 23);
-		this->remove->TabIndex = 3;
-		this->remove->Text = L"-";
-		this->remove->UseVisualStyleBackColor = true;
-		// 
-		// toggleTransactions
-		// 
-		this->toggleTransactions->Location = System::Drawing::Point(588, 3);
-		this->toggleTransactions->Name = L"toggleTransactions";
-		this->toggleTransactions->Size = System::Drawing::Size(28, 23);
-		this->toggleTransactions->TabIndex = 4;
-		this->toggleTransactions->Text = L">";
-		this->toggleTransactions->UseVisualStyleBackColor = true;
-
-		this->tableLayout->ResumeLayout(false);
-		this->tableLayout->PerformLayout();
-	}
-	static int getRowCount() {
-		return rowCount;
-	}
-	
-	System::Void update() {
-		this->actual->Text = gcnew String(category->getActual().toReadable().c_str());
-		this->budgetAlter->Text = gcnew String(category->getCost().toFile().c_str());
-		this->cost->Text = gcnew String(category->getCost().toReadable().c_str());
-		this->categoryName->Text = gcnew String(category->getCategory().c_str());
-		this->categoryAlter->Text = gcnew String(category->getCategory().c_str());
-	}
-};
+//
+// A row that displays a transaction
+//
 
 ref class transactionRow {
 private:
@@ -300,6 +41,7 @@ private:
 		std::string temp;
 		convertSysToStdString(this->nameAlter->Text, temp);
 		this->trans->setName(temp);
+		temp = "";
 		convertSysToStdString(this->costAlter->Text, temp);
 		this->trans->setCost(money(temp));
 
@@ -367,7 +109,7 @@ public:
 	System::Windows::Forms::TextBox^ costAlter;
 
 
-	transactionRow(transaction* t) {
+	transactionRow(transaction* t, int initHeight) {
 		trans = t;
 		this->tableLayout = (gcnew System::Windows::Forms::TableLayoutPanel());
 		this->cost = (gcnew System::Windows::Forms::Label());
@@ -375,9 +117,16 @@ public:
 		this->remove = (gcnew System::Windows::Forms::Button());
 		this->transName = (gcnew System::Windows::Forms::Label());
 		this->dollarSign = (gcnew System::Windows::Forms::Label());
+		this->nameAlter = (gcnew System::Windows::Forms::TextBox());
+		this->costAlter = (gcnew System::Windows::Forms::TextBox());
 
-		this->tableLayout->SuspendLayout();
+	}
 
+	void update() {
+
+	}
+
+	void build() {
 		// 
 		// tableLayout
 		// 
@@ -453,11 +202,326 @@ public:
 		this->transName->TabIndex = 2;
 		this->transName->Text = L"label3";
 
-		this->tableLayout->ResumeLayout(false);
-		this->tableLayout->PerformLayout();
+		update();
+	}
+};
+
+//
+// A row that displays a budget category
+//
+
+ref class budgetRow {
+private:
+	static int rowCount = 0;
+	bool alterValues = false;
+
+	budgetCategory* category;
+
+	void convertSysToStdString(System::String^ s, std::string& os) {
+		using namespace Runtime::InteropServices;
+		const char* chars =
+			(const char*)(Marshal::StringToHGlobalAnsi(s)).ToPointer();
+		os = chars;
+		Marshal::FreeHGlobal(IntPtr((void*)chars));
 	}
 
-	void update() {
 
+	//A toString() function that returns a System::String
+	String^ toString() {
+		return gcnew String(category->getCategory().c_str());
+	}
+
+
+	//
+	// Event handlers
+	//
+	System::Void alterClick(System::Object^ sender, System::EventArgs^ e) {
+		if (alterValues) {
+			switchToViewOnly();
+		}
+		else {
+			switchToAlter();
+		}
+		alterValues = !alterValues;
+
+	}
+	//System::Void removeClick(System::Object^ sender, System::EventArgs^ e) {
+	//	if (this->window->removeRow(this))
+	//		delete this;
+	//}
+
+
+
+	System::Void switchToViewOnly() {
+		//Load new values
+		std::string temp;
+		convertSysToStdString(this->alterCategory->Text, temp);
+		this->category->setCategory(temp);
+		convertSysToStdString(this->alterBudget->Text, temp);
+		this->category->setCost(money(temp));
+
+		//Break down table
+		this->tableLayout->Controls->Clear();
+		this->tableLayout->ColumnStyles->Clear();
+
+		//Rebuild table
+		this->tableLayout->ColumnCount = 7;
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+			33.33332F)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+			33.33334F)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+			33.33334F)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+			32)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+			32)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+			32)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+			32)));
+		this->tableLayout->Controls->Add(this->categoryName, 0, 0);
+		this->tableLayout->Controls->Add(this->cost, 1, 0);
+		this->tableLayout->Controls->Add(this->actual, 2, 0);
+		this->tableLayout->Controls->Add(this->alterButton, 3, 0);
+		this->tableLayout->Controls->Add(this->addTransButton, 4, 0);
+		this->tableLayout->Controls->Add(this->viewTransactionsButton, 5, 0);
+		this->tableLayout->Controls->Add(this->removeButton, 6, 0);
+
+		update();
+	}
+
+
+	System::Void switchToAlter() {
+		//Break down table
+		this->tableLayout->Controls->Clear();
+		this->tableLayout->ColumnStyles->Clear();
+
+		//Rubuld table 
+		this->tableLayout->ColumnCount = 8;
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+			33.26886F)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+			7.156309F)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+			27.11864F)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+			32.39171F)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+			32)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+			32)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+			32)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+			32)));
+		this->tableLayout->Controls->Add(this->alterCategory, 0, 0);
+		this->tableLayout->Controls->Add(this->dollarSign, 1, 0);
+		this->tableLayout->Controls->Add(this->alterBudget, 2, 0);
+		this->tableLayout->Controls->Add(this->actual, 3, 0);
+		this->tableLayout->Controls->Add(this->alterButton, 4, 0);
+		this->tableLayout->Controls->Add(this->addTransButton, 5, 0);
+		this->tableLayout->Controls->Add(this->viewTransactionsButton, 6, 0);
+		this->tableLayout->Controls->Add(this->removeButton, 7, 0);
+
+		update();
+	}
+
+
+
+
+
+public:
+	System::Windows::Forms::TableLayoutPanel^ tableLayout;
+	System::Windows::Forms::Label^ categoryName;
+	System::Windows::Forms::Label^ cost;
+	System::Windows::Forms::Label^ actual;
+	System::Windows::Forms::Label^ dollarSign;
+	System::Windows::Forms::Button^ alterButton;
+	System::Windows::Forms::Button^ removeButton;
+	System::Windows::Forms::Button^ viewTransactionsButton;
+	System::Windows::Forms::Button^ addTransButton;
+	System::Windows::Forms::TextBox^ alterCategory;
+	System::Windows::Forms::TextBox^ alterBudget;
+
+	System::Collections::Generic::List<transactionRow^> rows;
+
+	budgetRow(budgetCategory* bc, bool alter) {
+		category = bc;
+		rowCount++;
+
+		//Instantiate Variables
+		this->tableLayout = (gcnew System::Windows::Forms::TableLayoutPanel());
+		this->categoryName = (gcnew System::Windows::Forms::Label());
+		this->cost = (gcnew System::Windows::Forms::Label());
+		this->actual = (gcnew System::Windows::Forms::Label());
+		this->dollarSign = (gcnew System::Windows::Forms::Label());
+		this->alterButton = (gcnew System::Windows::Forms::Button());
+		this->removeButton = (gcnew System::Windows::Forms::Button());
+		this->viewTransactionsButton = (gcnew System::Windows::Forms::Button());
+		this->addTransButton = (gcnew System::Windows::Forms::Button());
+		this->alterCategory = (gcnew System::Windows::Forms::TextBox());
+		this->alterBudget = (gcnew System::Windows::Forms::TextBox());
+		for (int i = 0; i < (int)bc->getReceipts().size(); i++) {
+			this->rows.Add(gcnew transactionRow(&(category->getReceipts()[i]), 1) );
+		}
+
+		alterValues = !alter;
+		build();
+	}
+
+	~budgetRow() {
+		rowCount--;
+	}
+
+	static int getRowCount() {
+		return rowCount;
+	}
+
+	System::Void update() {
+		this->actual->Text = gcnew String(category->getActual().toReadable().c_str());
+		this->alterBudget->Text = gcnew String(category->getCost().toFile().c_str());
+		this->cost->Text = gcnew String(category->getCost().toReadable().c_str());
+		this->categoryName->Text = gcnew String(category->getCategory().c_str());
+		this->alterCategory->Text = gcnew String(category->getCategory().c_str());
+	}
+
+	private:
+	void build() {
+		// 
+		// tableLayout
+		// 
+		this->tableLayout->ColumnCount = 7;
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+			33.33332F)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+			33.33334F)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+			33.33334F)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+			32)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+			32)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+			32)));
+		this->tableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+			32)));
+		this->tableLayout->Controls->Add(this->categoryName, 0, 0);
+		this->tableLayout->Controls->Add(this->cost, 1, 0);
+		this->tableLayout->Controls->Add(this->actual, 2, 0);
+		this->tableLayout->Controls->Add(this->alterButton, 3, 0);
+		this->tableLayout->Controls->Add(this->addTransButton, 4, 0);
+		this->tableLayout->Controls->Add(this->viewTransactionsButton, 5, 0);
+		this->tableLayout->Controls->Add(this->removeButton, 6, 0);
+		this->tableLayout->Location = System::Drawing::Point(100, 32*(rowCount));
+		this->tableLayout->Name = L"tableLayout";
+		this->tableLayout->RowCount = 1;
+		this->tableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 100)));
+		this->tableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 32)));
+		this->tableLayout->Size = System::Drawing::Size(688, 32);
+		this->tableLayout->TabIndex = 0;
+		// 
+		// categoryName
+		// 
+		this->categoryName->Anchor = System::Windows::Forms::AnchorStyles::None;
+		this->categoryName->AutoSize = true;
+		this->categoryName->Location = System::Drawing::Point(43, 9);
+		this->categoryName->Name = L"categoryName";
+		this->categoryName->Size = System::Drawing::Size(86, 13);
+		this->categoryName->TabIndex = 0;
+		this->categoryName->Text = gcnew String(category->getCategory().c_str());
+		//
+		// alterCategory
+		//
+		this->alterCategory->Anchor = System::Windows::Forms::AnchorStyles::Left;
+		this->alterCategory->Location = System::Drawing::Point(216, 6);
+		this->alterCategory->Name = L"categoryAlter";
+		this->alterCategory->Size = System::Drawing::Size(100, 20);
+		this->alterCategory->TabIndex = 5;
+		this->alterCategory->Text = gcnew String(this->category->getCategory().c_str());
+		// 
+		// cost
+		// 
+		this->cost->Anchor = System::Windows::Forms::AnchorStyles::None;
+		this->cost->AutoSize = true;
+		this->cost->Location = System::Drawing::Point(227, 9);
+		this->cost->Name = L"cost";
+		this->cost->Size = System::Drawing::Size(65, 13);
+		this->cost->TabIndex = 1;
+		this->cost->Text = gcnew String(category->getCost().toReadable().c_str());
+		// 
+		// dollarSign
+		// 
+		this->dollarSign->Anchor = System::Windows::Forms::AnchorStyles::Right;
+		this->dollarSign->AutoSize = true;
+		this->dollarSign->Location = System::Drawing::Point(197, 9);
+		this->dollarSign->Name = L"dollarSign";
+		this->dollarSign->Size = System::Drawing::Size(13, 13);
+		this->dollarSign->TabIndex = 6;
+		this->dollarSign->Text = L"$";
+		//
+		// alterBudget
+		//
+		this->alterBudget->Anchor = System::Windows::Forms::AnchorStyles::Left;
+		this->alterBudget->Location = System::Drawing::Point(216, 6);
+		this->alterBudget->Name = L"budgetAlter";
+		this->alterBudget->Size = System::Drawing::Size(100, 20);
+		this->alterBudget->TabIndex = 5;
+		this->alterBudget->Text = gcnew String(this->category->getCost().toFile().c_str());
+		// 
+		// actual
+		// 
+		this->actual->Anchor = System::Windows::Forms::AnchorStyles::None;
+		this->actual->AutoSize = true;
+		this->actual->Location = System::Drawing::Point(402, 9);
+		this->actual->Name = L"actual";
+		this->actual->Size = System::Drawing::Size(61, 13);
+		this->actual->TabIndex = 5;
+		this->actual->Text = gcnew String(category->getActual().toReadable().c_str());
+		// 
+		// alterButton
+		// 
+		this->alterButton->Location = System::Drawing::Point(522, 3);
+		this->alterButton->Name = L"alter";
+		this->alterButton->Size = System::Drawing::Size(26, 23);
+		this->alterButton->TabIndex = 2;
+		this->alterButton->Text = L"*";
+		this->alterButton->UseVisualStyleBackColor = true;
+		this->alterButton->Click += gcnew System::EventHandler(this, &budgetRow::alterClick);
+		// 
+		// addTransButton
+		// 
+		this->addTransButton->Location = System::Drawing::Point(556, 3);
+		this->addTransButton->Name = L"addTrans";
+		this->addTransButton->Size = System::Drawing::Size(26, 23);
+		this->addTransButton->TabIndex = 3;
+		this->addTransButton->Text = L"+";
+		this->addTransButton->UseVisualStyleBackColor = true;
+		// 
+		// viewTransactionsButton
+		// 
+		this->viewTransactionsButton->Location = System::Drawing::Point(588, 3);
+		this->viewTransactionsButton->Name = L"toggleTransactions";
+		this->viewTransactionsButton->Size = System::Drawing::Size(26, 23);
+		this->viewTransactionsButton->TabIndex = 4;
+		this->viewTransactionsButton->Text = L">";
+		this->viewTransactionsButton->UseVisualStyleBackColor = true;
+		// 
+		// removeButton
+		// 
+		this->removeButton->Location = System::Drawing::Point(612, 3);
+		this->removeButton->Name = L"remove";
+		this->removeButton->Size = System::Drawing::Size(26, 23);
+		this->removeButton->TabIndex = 5;
+		this->removeButton->Text = L"-";
+		this->removeButton->UseVisualStyleBackColor = true;
+
+		if (alterValues) {
+			switchToViewOnly();
+		}
+		else {
+			switchToAlter();
+		}
+		alterValues = !alterValues;
 	}
 };

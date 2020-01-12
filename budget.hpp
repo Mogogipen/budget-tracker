@@ -96,20 +96,29 @@ public:
 	bool buildFromFile(const string& line) {
 		stringstream temp;
 		int index = -1;
-		for (unsigned int i = 0; i < line.size(); i++) {
+		for (int i = 0; i < line.size(); i++) {
 			if (line[i] == '.') {
 				index = i;
 			}
 		}
-		if (index < 0)
-			return false;
-		temp << line.substr(0, index+1);
-		temp >> dollars;
-		temp.str("");
-		temp << line.substr(index+1, 2);
-		temp >> cents;
+		if (index < 0) {
+			temp << line;
+			temp >> dollars;
+			cents = 0;
+		}
+		else {
+			temp << line.substr(0, index + 1);
+			temp >> dollars;
+			temp.str("");
+			temp << line.substr(index + 1, 2);
+			temp >> cents;
+		}
 		if (dollars < 0)
 			cents *= -1;
+		if (cin.fail()) {
+			dollars = 0;
+			cents = 0;
+		}
 		return true;
 	}
 
@@ -290,7 +299,7 @@ public:
 		return true;
 	}
 
-	budgetCategory(money m = money(0,0), string s = "unknown") {
+	budgetCategory(money m = money(0,0), string s = "") {
 		setCategory(s);
 		setCost(m);
 	}
@@ -311,6 +320,9 @@ public:
 	}
 	money& getBudgetAmount() {
 		return budgetAmount;
+	}
+	money& getTotalActual() {
+		return totalActual;
 	}
 	budgetCategory& getBudgetCategory(int index) {
 		return budgetList[index];
