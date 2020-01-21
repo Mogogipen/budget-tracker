@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <iostream>
 #include <fstream>
 #include "rows.hpp"
 
@@ -255,20 +256,20 @@ namespace budgettracker {
 		//Place in constructor
 		void init() {
 			activeBudget = new budget(money(0, 0), "Unknown");
-			activeBudget->include(budgetCategory());
+			activeBudget->include(budgetCategory(money(0,0), "uncategorized" ));
 
 			for (int i = 0; i < activeBudget->getBudgetListSize(); i++) {
 				addBudgetRow(&(activeBudget->getBudgetCategory(i)));
 			}
 		}
 
-		//Allow the title name to be changed
+		//Allow the title name to be changed (switch title label to a textbox)
 		void switchTitleToAlter() {
 			this->budgetTitle->Visible = false;
 			this->alterBudgetTitle->Visible = true;
 			this->alterBudgetTitle->Text = gcnew String(this->activeBudget->getName().c_str());
 		}
-		//Save the altered title name
+		//Save the altered title name (switch textbox to the title label)
 		void switchTitleToViewOnly() {
 			std::string temp;
 			convertSysToStdString(this->alterBudgetTitle->Text, temp);
@@ -281,8 +282,10 @@ namespace budgettracker {
 
 
 		//Use to create a budgetRow instead of its constructor
-		//------This function makes line deletion possible.
+		//------These functions make line deletion possible.
 		void addBudgetRow(budgetCategory* b, bool t) {
+			//activeBudget->include(*b);
+
 			budgetRow^ temp = gcnew budgetRow(b, t);
 			this->categoryTable.Add(temp);
 
@@ -302,7 +305,15 @@ namespace budgettracker {
 			if (removeLine != nullptr) {
 				this->splitContainer1->Panel2->Controls->Remove(removeLine->tableLayout);
 				this->categoryTable.Remove(removeLine);
+				//TODO: remove removeLine's budgetCategory from activeBudget
+				string temp;
+				convertSysToStdString(removeLine->categoryName->Text, temp);
+				cout << temp;
+				activeBudget->remove(temp);
 				delete removeLine;
+				for (int i = 0; i < activeBudget->getBudgetListSize(); i++) {
+					cout << activeBudget->getBudgetCategory(i).getCategory();
+				}
 			}
 
 			for (int i = index; i < this->categoryTable.Count; i++) {
@@ -366,8 +377,9 @@ namespace budgettracker {
 		}
 	}
 	private: System::Void addNewButton_click(System::Object^ sender, System::EventArgs^ e) {
-		budgetCategory* newCategory = new budgetCategory();
-		this->addBudgetRow(newCategory, true);
+		//budgetCategory* newCategory = new budgetCategory();
+		activeBudget->include(budgetCategory());
+		this->addBudgetRow(& (activeBudget->getBudgetCategory(activeBudget->getBudgetListSize()-1) ), true);
 	}
 	private: System::Void alterTitleButton_Click(System::Object^ sender, System::EventArgs^ e) {
 		if (this->alter) {
