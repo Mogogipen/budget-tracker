@@ -1,4 +1,7 @@
 ﻿  BudgetForm.cpp
+  rows.hpp
+C:\Users\Nickolas Reimschiiss\Documents\School\CS 3150\budget-tracker\budget.hpp(99,21): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
 C:\Users\Nickolas Reimschiiss\Documents\School\CS 3150\budget-tracker\budget.hpp(99,21): warning C4018: '<': signed/unsigned mismatch
   BudgetForm.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
   budget-tracker.vcxproj -> C:\Users\Nickolas Reimschiiss\Documents\School\CS 3150\Debug\budget-tracker.exe

@@ -250,6 +250,10 @@ private:
 	//		delete this;
 	//}
 
+	System::Void viewTransClick(System::Object^ sender, System::EventArgs^ e) {
+		cout << this->category << endl;
+	}
+
 
 
 	System::Void switchToViewOnly() {
@@ -382,7 +386,7 @@ public:
 		this->actual->Text = gcnew String(category->getActual().toReadable().c_str());
 		this->alterBudget->Text = gcnew String(category->getCost().toFile().c_str());
 		this->cost->Text = gcnew String(category->getCost().toReadable().c_str());
-		this->categoryName->Text = gcnew String(category->getCategory().c_str());
+		this->categoryName->Text = gcnew String(category->getCategory().c_str()); //Error occurs here
 		this->alterCategory->Text = gcnew String(category->getCategory().c_str());
 	}
 
@@ -506,6 +510,7 @@ public:
 		this->viewTransactionsButton->TabIndex = 4;
 		this->viewTransactionsButton->Text = L">";
 		this->viewTransactionsButton->UseVisualStyleBackColor = true;
+		this->viewTransactionsButton->Click += gcnew System::EventHandler(this, &budgetRow::viewTransClick);
 		// 
 		// removeButton
 		// 

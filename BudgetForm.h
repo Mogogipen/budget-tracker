@@ -377,7 +377,6 @@ namespace budgettracker {
 		}
 	}
 	private: System::Void addNewButton_click(System::Object^ sender, System::EventArgs^ e) {
-		//budgetCategory* newCategory = new budgetCategory();
 		activeBudget->include(budgetCategory());
 		this->addBudgetRow(& (activeBudget->getBudgetCategory(activeBudget->getBudgetListSize()-1) ), true);
 	}
